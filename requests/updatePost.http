@@ -1,0 +1,9 @@
+PATCH http://localhost:3000/631ee3d090041b9af02fabc7 HTTP/1.1
+Content-Type: application/json
+
+{
+  "content":"update post",
+  "author":{
+    "email":"qwerty@gmail.com"
+  }
+}
