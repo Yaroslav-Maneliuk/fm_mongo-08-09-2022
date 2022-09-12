@@ -2,19 +2,33 @@ const http = require("http");
 const express = require("express");
 const yup = require("yup");
 const mongoose = require("mongoose");
+// const createError = require("http-errors");
 const { Schema } = mongoose;
+
+const emailSchema = yup.string().email("Incorrect email");
+const contentSchema = yup
+  .string()
+  .matches(/[a-z0-9\s]{5,255}$/i)
+  .required("Content is required");
 
 const postSchema = new Schema({
   content: {
     type: String,
     required: true,
     validate: {
-      validator: (v) => /[a-z0-9\s\.,!?]{5,256}/i.test(v),
+      validator: (v) => contentSchema.isValidSync(v),
       message: (props) => `${props.value} is not valid content!`,
     },
   },
   author: {
     login: String,
+    email: {
+      type: String,
+      validate: {
+        validator: (v) => emailSchema.isValidSync(v),
+        message: (props) => `${props.value} is not valid content!`,
+      },
+    },
     rate: Number,
   },
   isCorrect: { type: Boolean, default: false },
@@ -32,12 +46,24 @@ app.post("/", async (req, res, next) => {
   try {
     const { body } = req;
     const newPost = await Post.create(body);
-    res.send(newPost);
+    res.status(201).send(newPost);
   } catch (error) {
     next(error);
   }
 });
-app.get("/", async (req, res, next) => {});
+app.get("/", async (req, res, next) => {
+  try {
+    const posts = await Post.find()
+    res.status(200).send(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.use((error, req, res, next) => {
+  console.log(error);
+  res.send(error.message)
+});
 
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
