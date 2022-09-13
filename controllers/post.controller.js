@@ -24,20 +24,20 @@ module.exports.getAllPosts = async (req, res, next) => {
   }
 };
 
-module.exports.updatePost = async (req, res, next) => {
+module.exports.updatePost =  (req, res, next) => {
   try {
     const {
       body,
       params: { postId },
     } = req;
-    const post = await Post.findByIdAndUpdate(postId, body, {new:true});
-    // await Post.findByIdAndUpdate(postId, body, { new: true }, (err, post) => {
-    //   if (err) {
-    //     next(createError(400, "bad request"));
-    //   }
-    //   res.status(200).send(post);
-    // });
-    res.status(200).send(post);
+    // const post = await Post.findByIdAndUpdate(postId, body, {new:true});
+    // res.status(200).send(post);
+     Post.findByIdAndUpdate(postId, body, { new: true }, (err, post) => {
+      if (err) {
+        next(createError(400, err.message));
+      }
+      res.status(200).send(post);
+    });
   } catch (error) {
     next(error);
   }
