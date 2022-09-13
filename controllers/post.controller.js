@@ -6,7 +6,7 @@ module.exports.createPosts = async (req, res, next) => {
     const { body } = req;
     await Post.create(body, (err, post) => {
       if (err) {
-        next(createError(400, "bad request"));
+        next(createError(400, "bad request" + err.message));
       }
       res.status(201).send(post);
     });
