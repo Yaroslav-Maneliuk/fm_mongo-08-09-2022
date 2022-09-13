@@ -63,9 +63,7 @@ module.exports.getPost = async (req, res, next) => {
     const {
       params: { postId },
     } = req;
-
     const post = await Post.findById(postId);
-
     res.status(200).send(post);
   } catch (error) {
     next(error);

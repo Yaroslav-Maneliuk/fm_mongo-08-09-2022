@@ -2,17 +2,28 @@ const mongoose = require("mongoose");
 const { contentSchema, emailSchema } = require("../utils/schemaValidation");
 const { Schema } = mongoose;
 
-const commentSchema = new Schema({
-  comment: {
-    type: Text,
-    validate: {
-      validator: (v) => contentSchema.isValid(v),
-      message: (props) => `${props.value} is not a valid comment!`,
+const commentSchema = new Schema(
+  {
+    comment: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (v) => contentSchema.isValid(v),
+        message: (props) => `${props.value} is not a valid comment!`,
+      },
+    },
+    author: { type: String, default: "Anonim" },
+    createdAt: { type: Date, default: Date.now },
+    post: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
     },
   },
-  author: { type: String, default: "Anonim" },
-  createdAt: { type: Date, default: Date.now },
-});
+  {
+    versionKey: false,
+    timestamps: true,
+  }
+);
 
 const Comment = mongoose.model("Comment", commentSchema);
 module.exports = Comment;
