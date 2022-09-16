@@ -1,0 +1,27 @@
+version: '3.3'
+services:
+  backend-app:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    ports: 
+      - "3005:3000"
+    environment:
+      - PORT=3000
+    volumes:
+      - ./:/server
+    depends_on:
+      - fm_mongo
+    networks:
+      - fm_network
+
+  fm_mongo:
+    image: mongo
+    restart: always
+    networks:
+      - fm_network
+    volumes:
+      - /home/yaroslav/Documents/mongo_reserve/:/data/db
+
+networks:
+  fm_network:

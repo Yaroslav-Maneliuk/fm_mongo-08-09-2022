@@ -40,7 +40,7 @@ module.exports.getAllCommentsByPost = async (req, res, next) => {
     const {
       params: { postId },
     } = req;
-    const post = Post.findById(postId)
+    Comment.find({post:postId})
       .populate("comment")
       .exec((err, post) => {
         if (err) {
